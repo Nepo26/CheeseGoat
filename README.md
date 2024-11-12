@@ -10,9 +10,11 @@
 - Rollback to previous version when needed
 - Write an adorably good readme, explaining how your solution was designed and how to deploy it
 
-#### Train of Though
+#### Train of Thought
 - [ ] Just create a simple dockerfile that exposes a static web page 
 - [ ] Create simple terraform to deploy it 
 - [ ] Create simple Github Actions
 - [ ] Deploy it simply with EKS
 - [ ] Rollback in terraform simply
+
+
