@@ -21,7 +21,7 @@ private subnet.
 #   cidr="10.0.0.0/24"
 # }
 
-data "aws_availability_zones" "available" {}
+
 
 locals {
   name   = "garfield"
@@ -146,4 +146,5 @@ module "vpc" {
 
   tags=local.tags
 }
+
 
