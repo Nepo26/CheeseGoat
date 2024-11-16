@@ -29,7 +29,8 @@ locals {
   env  = "dev"
 
   vpc_cidr = "10.0.0.0/24"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
+  # TODO Increase AZs
+  azs      = slice(data.aws_availability_zones.available.names, 0, 1)
   tags = {
     Application = local.name
     GithubRepo  = local.team
@@ -120,10 +121,11 @@ module "vpc" {
   cidr = local.vpc_cidr
 
   azs                 = local.azs
-  public_subnets      = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 2, k)]
+  # TODO Increase public subnet
+  public_subnets      = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 1, k)]
   public_subnet_names = ["Load Balancer Subnet One", "Load Balancer Subnet Two"]
-
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 2, k + 1)]
+  # TODO Increase private subnet
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 1, k + 1)]
   # private_subnet_names = ["Private Subnet One", "Private Subnet Two"]
   manage_default_network_acl = true
 
