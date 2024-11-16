@@ -1,6 +1,11 @@
-APP_NAME=chall_1
-APP_PATH=app
-ENV=""
+APP_NAME:=chall_1
+APP_PATH:=app
+
+INFRA_DIR:="$(abspath $(CURDIR)/infra)"
+
+TF_PLAN_DIR:="$(INFRA_DIR)/tmp/tfplan"
+ENV:=""
+
 
 .PHONY: build-container
 build-container:
@@ -37,9 +42,18 @@ plan: get
 	@echo "// TODO: plan"
 	@terragrunt run-all plan \
 		--terragrunt-working-dir "infra/environments/${ENV}" \
-		--terragrunt-out-dir /tmp/tfplan
-
+		--terragrunt-out-dir "$(TF_PLAN_DIR)" \
+#		--terragrunt-log-level trace --terragrunt-debug
 .PHONY: show
 show:
-	@echo "// TODO: plan"
-	@terragrunt run-all show "/tmp/tfplan/**" --terragrunt-non-interactive
+	@echo "// TODO: show"
+	@terragrunt run-all show \
+		--terragrunt-working-dir "infra/environments/dev" \
+		 "$(shell echo $(TF_PLAN_DIR)/**)"
+
+
+
+.PHONY: graph-dependencies
+graph-dependencies:
+	@echo "// TODO; graph dependencies"
+	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" graph-dependencies
