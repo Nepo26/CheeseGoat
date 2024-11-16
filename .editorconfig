@@ -1,0 +1,29 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 500
+tab_width = 4
+
+# Target GitHub Actions workflow files
+# [.github/workflows/*.yml]
+# indent_style = space
+# indent_size = 2
+
+[.github/workflows/*.{yaml,yml}]
+indent_size = 2
+
+
+[*.{hcl,nomad}]
+indent_size = 2
+
+[*.{tf,tfvars}]
+indent_size = 2
+
+[Makefile]
+tab_width = 2
+indent_style = tab
