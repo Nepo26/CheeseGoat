@@ -1,0 +1,58 @@
+version: '3'
+services:
+    otel-collector:
+        image: otel/opentelemetry-collector:0.94.0
+        volumes:
+            - ./otel-collector-config.yaml:/etc/otelcol/config.yaml
+        ports:
+            - "4318:4317" # OTLP gRPC receiver
+            - "4319:4318" # OTLP HTTP receiver
+            - "8889:8889" # Prometheus exporter
+        depends_on:
+            - prometheus
+            - tempo
+
+        networks:
+            - observability-network  # Use the custom network
+    prometheus:
+        image: prom/prometheus:v2.45.3
+        volumes:
+            - ./prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+            - "9090:9090"
+
+        networks:
+            - observability-network  # Use the custom network
+    tempo:
+        image: grafana/tempo:latest
+        environment:
+            - TEMPO_STORAGE_BACKEND=local
+            - TEMPO_STORAGE_PATH=/tempo-data
+            - TEMPO_RECEIVER_OTLP_HTTP_ENABLED=true # Enable OTLP HTTP receiver
+            - TEMPO_RECEIVER_OTLP_GRPC_ENABLED=true # Enable OTLP gRPC receiver
+        volumes:
+            - ./tempo-data:/tempo-data
+        ports:
+            - "3200:3200" # Tempo HTTP API
+            - "4317:4317"
+        networks:
+            - observability-network  # Use the custom network
+    grafana:
+        image: grafana/grafana:latest
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+        ports:
+            - "3000:3000" # Grafana dashboard
+        depends_on:
+            - prometheus
+            - tempo
+        volumes:
+            - ./grafana.ini:/etc/grafana/grafana.ini
+        links:
+            - prometheus
+            - tempo
+        networks:
+            - observability-network  # Use the custom network
+networks:
+    observability-network:  # Define the custom network
+        driver: bridge  # Use Docker's default bridge driver
