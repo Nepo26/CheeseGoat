@@ -24,18 +24,18 @@ private subnet.
 
 
 locals {
-  name   = "garfield"
-  team   = "CheeseGoat"
-  env    = "dev"
+  name = "garfield"
+  team = "CheeseGoat"
+  env  = "dev"
 
   vpc_cidr = "10.0.0.0/24"
   azs      = slice(data.aws_availability_zones.available.names, 0, 2)
   tags = {
-    Application    = local.name
-    GithubRepo = local.team
+    Application = local.name
+    GithubRepo  = local.team
     Environment = local.env
-    Team = local.team
-    Terraform = true
+    Team        = local.team
+    Terraform   = true
   }
 
   network_acls = {
@@ -119,16 +119,16 @@ module "vpc" {
   name = local.name
   cidr = local.vpc_cidr
 
-  azs = local.azs
-  public_subnets = [for k,v in local.azs:  cidrsubnet(local.vpc_cidr, 2, k)]
+  azs                 = local.azs
+  public_subnets      = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 2, k)]
   public_subnet_names = ["Load Balancer Subnet One", "Load Balancer Subnet Two"]
 
-  private_subnets = [for k,v in local.azs:  cidrsubnet(local.vpc_cidr, 2, k+1)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 2, k + 1)]
   # private_subnet_names = ["Private Subnet One", "Private Subnet Two"]
   manage_default_network_acl = true
 
   enable_dns_hostnames = true
-  enable_dns_support = true
+  enable_dns_support   = true
 
   enable_nat_gateway = true
   single_nat_gateway = true
@@ -141,10 +141,10 @@ module "vpc" {
   # private_inbound_acl_rules = concat(local.network_acls["default_inbound"], local.network_acls["private_inbound"])
   # private_outbound_acl_rules = concat(local.network_acls["default_outbound"], local.network_acls["private_outbound"])
 
-  public_inbound_acl_rules = concat(local.network_acls["default_inbound"], local.network_acls["public_inbound"])
+  public_inbound_acl_rules  = concat(local.network_acls["default_inbound"], local.network_acls["public_inbound"])
   public_outbound_acl_rules = concat(local.network_acls["default_outbound"], local.network_acls["public_outbound"])
 
-  tags=local.tags
+  tags = local.tags
 }
 
 
