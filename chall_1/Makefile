@@ -20,13 +20,13 @@ create-infra:
 	@echo "//TODO: create-infra"
 	@terragrunt --terragrunt-working-dir infra/environments/dev run-all init
 	@terragrunt --terragrunt-working-dir infra/environments/dev run-all get
-	@terragrunt --terragrunt-working-dir infra/environments/dev plan -out=./plan.tfplan
 
-.PHONY: graph-infra
-graph-infra: create-infra
-	@echo "// TODO: graph-infra"
-	@terragrunt --terragrunt-working-dir infra/environments/dev graph -draw-cycles -plan=./plan.tfplan
-	@#terragrunt --terragrunt-working-dir infra/environments/dev show -json ./plan.tfplan > ./plan.json
+.PHONY: plan
+plan: create-infra
+	@echo "// TODO: plan"
+	@terragrunt run-all plan --terragrunt-working-dir infra/environments/dev --terragrunt-out-dir /tmp/tfplan
 
-
-
+.PHONY: show
+show:
+	@echo "// TODO: plan"
+	@terragrunt run-all show /tmp/tfplan/** --terragrunt-non-interactive
