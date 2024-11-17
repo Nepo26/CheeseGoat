@@ -37,6 +37,12 @@ jobs:
             infra:
               - 'chall_1/infra/**'
   
+  debug_changes:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show changes outputs
+        run: "echo '${{ needs.changes.outputs }}'"
 
   tf_create_repository:
     needs: changes
