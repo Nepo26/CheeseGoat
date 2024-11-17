@@ -47,7 +47,7 @@ jobs:
       - name: Authenticating to AWS using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: "${{ secrets.TERRAFORM_IAM_ROLE }}"
+          role-to-assume: "${{ var.TERRAFORM_IAM_ROLE }}"
           aws-region: "${{ env.region }}"
 
       - name: Format Terraform
