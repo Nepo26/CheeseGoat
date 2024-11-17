@@ -32,7 +32,6 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: filter
         with:
-          list-files: shell
           working-directory: 'chall_1'
           filters: |
             app:
