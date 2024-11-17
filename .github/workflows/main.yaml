@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show changes outputs
-        run: "echo \"OUTPUTS=> '${{join(needs.changes.result.*, '\n')}}'\""
+        run: "echo \"OUTPUTS=> INFRA('${{needs.changes.outputs.infra }}') && APP('${{needs.changes.outputs.app}})\""
 
   tf_create_repository:
     needs: changes
