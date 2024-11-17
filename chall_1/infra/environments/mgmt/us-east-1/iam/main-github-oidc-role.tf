@@ -3,7 +3,10 @@ module "iam_github_oidc_role" {
   name = "GithubOidcRole"
   # This should be updated to suit your organization, repository, references/branches, etc.
   # TODO Limit branches that can assume this role
-  subjects = ["Nepo26/ChesseGoat/:*"]
+  subjects = [
+    "repo:Nepo26/ChesseGoat/:*",
+    "repo:Nepo26/ChesseGoat/:feat/Nepo26/CheeseGoat#1"
+  ]
 
   policies = {
     TFStateManage = module.policy_state_admin.arn
