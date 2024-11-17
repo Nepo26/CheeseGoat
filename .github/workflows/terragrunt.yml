@@ -35,6 +35,16 @@ on:
         type: boolean
         default: true
 
+      run_output:
+        required: false
+        type: boolean
+        default: true
+
+      generate_artifacts:
+        required: false
+        type: boolean
+        default: false
+
     secrets: #      TODO Avoid defining here what are the environments and abstract this later
       global_account_id:
         required: true
@@ -46,15 +56,18 @@ on:
         required: true
 
 jobs:
-  tf_create_ecr:
+  terraform:
     runs-on: ubuntu-latest
     env:
       GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
       MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
       DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
+      output_json_path: 'tmp/output.json'
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
+    outputs:
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -90,3 +103,20 @@ jobs:
       - name: Apply Terraform
         if: inputs.apply
         run: "make apply ENV=${{inputs.environment}}"
+
+      - name: Terraform Output
+        if: inputs.run_output && ! inputs.generate_artifacts
+        run: "make output ENV=${{inputs.environment}}"
+
+      - name: Terraform Output To File
+        if: inputs.run_output && inputs.generate_artifacts
+        run: "make output ENV=${{inputs.environment}} > ${{ env.output_json_path }}"
+
+
+#      TODO Consider to create a script that transforms the terraform json output into valid values
+      - name: Generate Artifacts
+        if: inputs.generate_artifacts && inputs.run_output
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-output-artifacts
+          path: ${{ env.output_json_path }}
