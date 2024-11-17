@@ -11,7 +11,43 @@ permissions:
   contents: read
   actions: read
 
+env:
+  tf_version: '1.9.7'
+  tg_version: '0.68.15-beta2024111501'
+  environment: 'dev'
+
 jobs:
+  tf_create_repository:
+    runs-on: ubuntu-latest
+    env:
+      environment: global
+    defaults:
+      run:
+        working-directory: 'chall_1/'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "${{ env.tf_version }}"
+
+      - name: Set up Terragrunt
+        uses: jaxxstorm/action-install-gh-release@v1.13.0
+        with:
+          token: '${{ github.token }}'
+          repo: gruntwork-io/terragrunt
+          asset-name: "terragrunt_linux_amd64"
+          extension-matching: disable
+          rename-to: terragrunt
+          chmod: 0755
+
+      - name: Format Terraform
+        run: "make fmt ENV=${{env.environment}}"
+
+      - name: Plan Terraform
+        run: "make plan ENV=${{env.environment}}"
   build_image:
     runs-on: ubuntu-latest
     steps:
