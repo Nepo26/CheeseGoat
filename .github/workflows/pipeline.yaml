@@ -28,7 +28,10 @@ jobs:
       environment: "global"
       region: "us-east-1"
       tf_version: "1.9.7"
-
+    permissions:
+      id-token: write
+      contents: read
+      actions: read
     secrets: inherit
 
 #    runs-on: ubuntu-latest

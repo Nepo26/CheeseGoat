@@ -15,12 +15,6 @@ on:
         required: true
         type: string
 
-      token:
-        required: false
-        type: string
-        default: '${{ github.token }}'
-
-
       tf_version:
         required: false
         type: string
@@ -55,6 +49,9 @@ on:
       dev_account_id:
         required: true
 
+      token:
+        required: false
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -80,7 +77,7 @@ jobs:
       - name: Set up Terragrunt
         uses: jaxxstorm/action-install-gh-release@v1.13.0
         with:
-          token: '${{ inputs.token }}'
+          token: '${{ secrets.token }}'
           repo: gruntwork-io/terragrunt
           asset-name: "terragrunt_linux_amd64"
           extension-matching: disable
