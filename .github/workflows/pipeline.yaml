@@ -22,12 +22,12 @@ env:
 jobs:
   tf_create_ecr:
     name: "Create ECR"
-    uses: './.github/workflows/terragrunt.yml'
+    uses: "./.github/workflows/terragrunt.yml"
     with:
       working-directory: "chall_1/"
-      environment: ${{ env.environment }}
-      region: ${{ env.region }}
-      tf_version: ${{ env.tf_version }}
+      environment: "${{ env.environment }}"
+      region: "${{ env.region }}"
+      tf_version: "${{ env.tf_version }}"
     secrets: inherit
 
 #    runs-on: ubuntu-latest
