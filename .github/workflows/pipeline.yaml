@@ -89,7 +89,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: "chall_1/app/"
-          push: false
+          push: true
           load: true
           tags: ${{ steps.login-ecr.outputs.registry}}/${{steps.ecr_name.outputs.ecr_name}}:${{steps.sha_short.outputs.sha_short}}
           cache-from: type=local,src=/tmp/.buildx-cache
