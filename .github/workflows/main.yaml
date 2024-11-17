@@ -20,6 +20,9 @@ env:
 jobs:
   tf_create_repository:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     env:
       environment: global
     defaults:
