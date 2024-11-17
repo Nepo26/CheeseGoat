@@ -41,7 +41,7 @@ jobs:
 
   tf_create_repository:
     needs: changes
-    if: ${{ needs.changes.outputs.infra }}
+    if: ${{ needs.changes.outputs.infra == 'true'}}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -88,7 +88,7 @@ jobs:
 
   build_image:
     needs: [changes, tf_create_repository]
-    if: ${{ needs.changes.outputs.app }}
+    if: ${{ needs.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
