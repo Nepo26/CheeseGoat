@@ -1,24 +1,26 @@
 module "shared_ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
-  repository_name                   = "${var.project_name}-${var.environment}-shared-ecr"
+  repository_name = "${var.project_name}-${var.environment}-shared-ecr"
   # TODO Define read write based on groups
   repository_read_write_access_arns = [data.aws_caller_identity.current.arn]
-  create_lifecycle_policy           = true
+  create_lifecycle_policy = true
   repository_lifecycle_policy = jsonencode({
-    rules = {
-      rulePriority : 1,
-      description : "Keep last 10 images",
-      selection = {
-        tagStatus     = "tagged",
-        tagPrefixList = "v",
-        countType     = "imageCountMoreThan"
-        countNumber   = 10
-      },
-      action = {
-        type = "expire"
+    rules = [
+      {
+        rulePriority : 1,
+        description : "Keep last 10 images",
+        selection = {
+          tagStatus     = "tagged",
+          tagPrefixList = "v",
+          countType     = "imageCountMoreThan"
+          countNumber   = 10
+        },
+        action = {
+          type = "expire"
+        }
       }
-    }
+    ]
   })
 
   repository_force_delete = false
