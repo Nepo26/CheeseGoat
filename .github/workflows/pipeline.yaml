@@ -22,7 +22,7 @@ env:
 jobs:
   tf_create_ecr:
     name: "Create ECR"
-    uses: './.github/terragrunt.yml'
+    uses: './.github/workflows/terragrunt.yml'
     with:
       working-directory: "chall_1/"
       environment: ${{ env.environment }}
