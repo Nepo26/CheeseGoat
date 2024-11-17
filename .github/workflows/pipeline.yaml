@@ -28,8 +28,8 @@ jobs:
       environment: "global"
       region: "us-east-1"
       tf_version: "1.9.7"
-      generate_artifacts: 'true'
-      apply: 'true'
+      generate_artifacts: true
+      apply: true
     permissions:
       id-token: write
       contents: read
