@@ -8,7 +8,7 @@ ENV :=
 IAM_USER :=
 LOCAL ?= false
 
-ifeq (,$(wildcard, .env))
+ifeq ($(wildcard .env),)
 	SHELL := aws-vault exec --server $(IAM_USER) -- /bin/bash
 
 	include .env
