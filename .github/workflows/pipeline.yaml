@@ -25,9 +25,10 @@ jobs:
     uses: "./.github/workflows/terragrunt.yml"
     with:
       working-directory: "chall_1/"
-      environment: "${{ env.environment }}"
-      region: "${{ env.region }}"
-      tf_version: "${{ env.tf_version }}"
+      environment: "global"
+      region: "us-east-1"
+      tf_version: "1.9.7"
+
     secrets: inherit
 
 #    runs-on: ubuntu-latest
