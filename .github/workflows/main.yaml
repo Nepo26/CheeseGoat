@@ -8,50 +8,11 @@ on:
     branches:
       - main
 
-permissions:
-  id-token: write
-  contents: read
-  actions: read
-
-env:
-  tf_version: '1.9.7'
-  tg_version: '0.68.15-beta2024111501'
-  environment: 'global'
-  region: 'us-east-1'
-
 jobs:
-  # JOB to run change detection
-  changes:
+  tf_create_ecr:
+    if: ${{ github.event.event_type == 'create_ecr' }}
     runs-on: ubuntu-latest
-    outputs:
-      app: ${{ steps.filter.outputs.app }}
-      infra: ${{ steps.filter.outputs.infra }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            app:
-              - 'chall_1/app/**'
-            infra:
-              - 'chall_1/infra/**'
-  
-  debug_changes:
-    needs: changes
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show changes outputs
-        run: "echo \"OUTPUTS=> INFRA('${{needs.changes.outputs.infra }}') && APP('${{needs.changes.outputs.app}})\""
-
-      - run: "echo \"OUTPUTS=> '${{needs.changes.outputs.app }}' == true => '${{needs.changes.outputs.app == true}})'\""
-
-      - run: "echo \"OUTPUTS=> '${{needs.changes.outputs.app }}' == 'true' => '${{needs.changes.outputs.app == 'true'}})'\""
-
-  tf_create_repository:
-    needs: changes
-    if: ${{ contains(needs.changes.outputs, 'infra') }}
-    runs-on: ubuntu-latest
+    env: ${{ github.event.client_payload.env.environment }}
     defaults:
       run:
         working-directory: 'chall_1/'
@@ -94,10 +55,7 @@ jobs:
           MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
           DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
 
-
   build_image:
-    needs: [changes, tf_create_repository]
-    if: ${{ needs.changes.outputs.app == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
