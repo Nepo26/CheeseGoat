@@ -50,7 +50,8 @@ data "aws_iam_policy_document" "manage_ecr_permissions" {
       "ecr:CompleteLayerUpload",
       "ecr:ListTagsForResource",
       "ecr:SetRepositoryPolicy",
-      "ecr:PutLifecyclePolicy"
+      "ecr:PutLifecyclePolicy",
+      "ecr:GetAuthorizationToken"
     ]
     resources = ["*"]
   }
