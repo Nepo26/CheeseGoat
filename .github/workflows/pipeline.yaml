@@ -29,7 +29,7 @@ jobs:
       region: "us-east-1"
       tf_version: "1.9.7"
       generate_artifacts: 'true'
-      apply: 'yes'
+      apply: 'true'
     permissions:
       id-token: write
       contents: read
