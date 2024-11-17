@@ -102,7 +102,7 @@ jobs:
 
       - name: Apply Terraform
         if: inputs.apply
-        run: "make apply ENV=${{inputs.environment}}"
+        run: "make apply ENV=${{inputs.environment}} -auto-approve"
 
       - name: Terraform Output
         if: inputs.run_output && ! inputs.generate_artifacts
