@@ -37,8 +37,8 @@ jobs:
       mgmt_account_id: ${{secrets.MGMT_ACCOUNT_ID}}
       dev_account_id: ${{secrets.DEV_ACCOUNT_ID}}
       token: ${{secrets.GITHUB_TOKEN}}
-
-#    runs-on: ubuntu-latest
+      terraform_iam_role: ${{secrets.TERRAFORM_IAM_ROLE}}
+  #    runs-on: ubuntu-latest
 #    env:
 #      GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
 #      MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
