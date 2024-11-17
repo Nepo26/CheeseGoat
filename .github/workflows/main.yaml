@@ -15,6 +15,7 @@ env:
   tf_version: '1.9.7'
   tg_version: '0.68.15-beta2024111501'
   environment: 'dev'
+  region: 'us-east-1'
 
 jobs:
   tf_create_repository:
@@ -43,11 +44,23 @@ jobs:
           rename-to: terragrunt
           chmod: 0755
 
+      - name: Authenticating to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "${{ secrets.TERRAFORM_IAM_ROLE }}"
+          aws-region: "${{ env.region }}"
+          role-session-name: GithubActions
+
       - name: Format Terraform
         run: "make fmt ENV=${{env.environment}}"
 
+
+
       - name: Plan Terraform
         run: "make plan ENV=${{env.environment}}"
+
+
+
   build_image:
     runs-on: ubuntu-latest
     steps:
