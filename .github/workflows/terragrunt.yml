@@ -1,0 +1,92 @@
+name: 'Reusable Terragrunt Workflow'
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+
+      environment:
+        required: true
+        type: string
+
+      region:
+        required: true
+        type: string
+
+      token:
+        required: false
+        type: string
+        default: '${{ github.token }}'
+
+
+      tf_version:
+        required: false
+        type: string
+
+      apply:
+        required: false
+        type: boolean
+        default: false
+
+      format:
+        required: false
+        type: boolean
+        default: true
+
+    secrets: #      TODO Avoid defining here what are the environments and abstract this later
+      global_account_id:
+        required: true
+
+      mgmt_account_id:
+        required: true
+
+      dev_account_id:
+        required: true
+
+jobs:
+  tf_create_ecr:
+    runs-on: ubuntu-latest
+    env:
+      GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
+      MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
+      DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "${{ inputs.tf_version }}"
+
+      - name: Set up Terragrunt
+        uses: jaxxstorm/action-install-gh-release@v1.13.0
+        with:
+          token: '${{ inputs.token }}'
+          repo: gruntwork-io/terragrunt
+          asset-name: "terragrunt_linux_amd64"
+          extension-matching: disable
+          rename-to: terragrunt
+          chmod: 0755
+
+      - name: Authenticating to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.TERRAFORM_IAM_ROLE}}
+          aws-region: ${{ inputs.region}}
+
+      - name: Format Terraform
+        if: inputs.format
+        run: "make fmt ENV=${{inputs.environment}}"
+
+      - name: Plan Terraform
+        run: "make plan ENV=${{inputs.environment}}"
+
+      - name: Apply Terraform
+        if: inputs.apply
+        run: "make apply ENV=${{inputs.environment}}"
