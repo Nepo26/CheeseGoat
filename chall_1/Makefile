@@ -8,11 +8,18 @@ ENV :=
 IAM_USER :=
 LOCAL ?= false
 
-ifeq ($(wildcard .env),)
-	SHELL := aws-vault exec --server $(IAM_USER) -- /bin/bash
 
-	include .env
-	export $(shell sed 's/=.*//' .env)
+# Conditionally include .env file
+-include .env
+
+ifeq ($(LOCAL),true)
+    # Only export .env variables if .env exists
+    ifneq (,$(wildcard .env))
+        include .env
+        export $(shell sed 's/=.*//' .env)
+    endif
+
+    SHELL := aws-vault exec --server $(IAM_USER) -- /bin/bash
 endif
 
 .PHONY: build-container
