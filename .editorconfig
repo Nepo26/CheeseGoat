@@ -14,9 +14,12 @@ tab_width = 4
 # indent_style = space
 # indent_size = 2
 
-[.github/workflows/*.{yaml,yml}]
+[.github/workflows/*.yaml]
 indent_size = 2
+indent_style = space
 
+[.github/workflows/*.yml]
+indent_size = 2
 
 [*.{hcl,nomad}]
 indent_size = 2
