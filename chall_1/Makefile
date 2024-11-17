@@ -1,17 +1,18 @@
-APP_NAME:=chall_1
-APP_PATH:=app
+APP_NAME := "chall_1"
+APP_PATH := "app"
 
-INFRA_DIR:="$(abspath $(CURDIR)/infra)"
+INFRA_DIR := "$(abspath $(CURDIR)/infra)"
 
-TF_PLAN_DIR:="$(INFRA_DIR)/tmp/tfplan"
-ENV:=""
-IAM_USER:=""
-LOCAL:=""
-include .env
-export $(shell sed 's/=.*//' .env)
+TF_PLAN_DIR := "$(INFRA_DIR)/tmp/tfplan"
+ENV :=
+IAM_USER :=
+LOCAL ?= false
 
-ifeq ($(LOCAL),true)
-	SHELL= aws-vault exec --server goat -- /bin/bash
+ifeq (,$(wildcard, .env))
+	SHELL := aws-vault exec --server $(IAM_USER) -- /bin/bash
+
+	include .env
+	export $(shell sed 's/=.*//' .env)
 endif
 
 .PHONY: build-container
