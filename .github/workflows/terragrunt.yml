@@ -62,7 +62,7 @@ jobs:
       GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
       MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
       DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
-      output_json_path: '${{env.HOME}}/output.json'
+      output_json_path: '${{HOME}}/output.json'
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
