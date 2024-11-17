@@ -48,17 +48,22 @@ jobs:
       - name: Authenticating to AWS using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: "arn:aws:iam::766722845693:role/GithubOidcRole"
-          aws-region: "us-east-1"
+          role-to-assume: ${{secrets.TERRAFORM_IAM_ROLE}}
+          aws-region: ${{env.region}}
 
       - name: Format Terraform
         run: "make fmt ENV=${{env.environment}}"
-
-
+        env:
+          GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
+          MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
+          DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
 
       - name: Plan Terraform
         run: "make plan ENV=${{env.environment}}"
-
+        env:
+          GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
+          MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
+          DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
 
 
   build_image:
