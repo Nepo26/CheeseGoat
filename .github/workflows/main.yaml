@@ -1,8 +1,10 @@
-name: CI/CD Pipeline
+name: First Challenge CI/CD Pipeline
 
 on:
   workflow_dispatch:
   push:
+    paths:
+      - 'chall_1/**'
     branches:
       - main
 
@@ -11,15 +13,94 @@ permissions:
   contents: read
   actions: read
 
+env:
+  tf_version: '1.9.7'
+  tg_version: '0.68.15-beta2024111501'
+  environment: 'global'
+  region: 'us-east-1'
+
 jobs:
+  # JOB to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+      infra: ${{ steps.filter.outputs.infra }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          working-directory: 'chall_1'
+          filters: |
+            app:
+              - 'app/**'
+            infra:
+              - 'infra/**'
+  
+
+  tf_create_repository:
+    needs: changes
+    if: ${{ needs.changes.outputs.infra }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'chall_1/'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "${{ env.tf_version }}"
+
+      - name: Set up Terragrunt
+        uses: jaxxstorm/action-install-gh-release@v1.13.0
+        with:
+          token: '${{ github.token }}'
+          repo: gruntwork-io/terragrunt
+          asset-name: "terragrunt_linux_amd64"
+          extension-matching: disable
+          rename-to: terragrunt
+          chmod: 0755
+
+      - name: Authenticating to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.TERRAFORM_IAM_ROLE}}
+          aws-region: ${{env.region}}
+
+      - name: Format Terraform
+        run: "make fmt ENV=${{env.environment}}"
+        env:
+          GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
+          MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
+          DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
+
+      - name: Plan Terraform
+        run: "make plan ENV=${{env.environment}}"
+        env:
+          GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
+          MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
+          DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
+
+
   build_image:
+    needs: [changes, tf_create_repository]
+    if: ${{ needs.changes.outputs.app }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
+          context: "chall_1/app/"
           push: false
+          load: true
           tags: user/app:latest

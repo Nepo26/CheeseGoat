@@ -1,11 +1,26 @@
-APP_NAME:=chall_1
-APP_PATH:=app
+APP_NAME := "chall_1"
+APP_PATH := "app"
 
-INFRA_DIR:="$(abspath $(CURDIR)/infra)"
+INFRA_DIR := "$(abspath $(CURDIR)/infra)"
 
-TF_PLAN_DIR:="$(INFRA_DIR)/tmp/tfplan"
-ENV:=""
+TF_PLAN_DIR := "$(INFRA_DIR)/tmp/tfplan"
+ENV :=
+IAM_USER :=
+LOCAL ?= false
 
+
+# Conditionally include .env file
+-include .env
+
+ifeq ($(LOCAL),true)
+    # Only export .env variables if .env exists
+    ifneq (,$(wildcard .env))
+        include .env
+        export $(shell sed 's/=.*//' .env)
+    endif
+
+    SHELL := aws-vault exec --server $(IAM_USER) -- /bin/bash
+endif
 
 .PHONY: build-container
 build-container:
@@ -27,31 +42,45 @@ get:
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all init
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all get
 
+.PHONY: debug-env
+debug-env:
+	@#env
+	@aws sts get-caller-identity
 
 .PHONY: fmt format
 fmt:
 	@echo "//TODO: fmt"
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all fmt
+	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" hclfmt
 
-.PHONY: create-infra
-create-infra: get
+.PHONY: apply
+apply: get
 	@echo "//TODO: create-infra"
+	@terragrunt run-all apply \
+		--terragrunt-working-dir "infra/environments/${ENV}"
 
 .PHONY: plan
 plan: get
 	@echo "// TODO: plan"
 	@terragrunt run-all plan \
 		--terragrunt-working-dir "infra/environments/${ENV}" \
-		--terragrunt-out-dir "$(TF_PLAN_DIR)" \
+		--terragrunt-out-dir "$(TF_PLAN_DIR)"
 #		--terragrunt-log-level trace --terragrunt-debug
+
+.PHONY: destroy
+destroy: get
+	@echo "// TODO: destroy"
+	@terragrunt run-all destroy \
+		--terragrunt-working-dir "infra/environments/${ENV}" \
+		--terragrunt-out-dir "$(TF_PLAN_DIR)"
+
+
 .PHONY: show
 show:
 	@echo "// TODO: show"
 	@terragrunt run-all show \
-		--terragrunt-working-dir "infra/environments/dev" \
+		--terragrunt-working-dir "infra/environments/${ENV}" \
 		 "$(shell echo $(TF_PLAN_DIR)/**)"
-
-
 
 .PHONY: graph-dependencies
 graph-dependencies:
