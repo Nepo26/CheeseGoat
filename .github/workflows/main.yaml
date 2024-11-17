@@ -30,14 +30,17 @@ jobs:
       app: ${{ steps.filter.outputs.app }}
       infra: ${{ steps.filter.outputs.infra }}
     steps:
+      - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
         with:
+          list-files: shell
+          working-directory: 'chall_1'
           filters: |
             app:
-              - 'chall_1/app/**'
+              - 'app/**'
             infra:
-              - 'chall_1/infra/**'
+              - 'infra/**'
   
 
   tf_create_repository:
