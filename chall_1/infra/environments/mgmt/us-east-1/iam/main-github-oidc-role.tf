@@ -4,8 +4,7 @@ module "iam_github_oidc_role" {
   # This should be updated to suit your organization, repository, references/branches, etc.
   # TODO Limit branches that can assume this role
   subjects = [
-    "repo:Nepo26/ChesseGoat/:*",
-    "repo:Nepo26/ChesseGoat/:feat/Nepo26/CheeseGoat#1"
+    "repo:Nepo26/ChesseGoat/*",
   ]
 
   policies = {
