@@ -1,11 +1,8 @@
-locals {
-  env = "dev"
-}
-
 module "shared_ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
-  repository_name                   = "shared-ecr-${local.env}"
+  repository_name                   = "${var.project_name}-${var.environment}-shared-ecr"
+  # TODO Define read write based on groups
   repository_read_write_access_arns = [data.aws_caller_identity.current.arn]
   create_lifecycle_policy           = true
   repository_lifecycle_policy = jsonencode({

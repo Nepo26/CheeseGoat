@@ -68,6 +68,7 @@ remote_state {
 }
 
 inputs = merge(
+  {project_name=local.project_name},
   local.region_vars.locals,
   local.environment_vars.locals,
 )

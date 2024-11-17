@@ -23,8 +23,6 @@ dependency "ec2" {
 inputs = {
   vpc_id = dependency.vpc.outputs.vpc_id
   public_subnet_ids  = dependency.vpc.outputs.public_subnet_ids
-  environment = "dev"
-
   target_id=dependency.ec2.outputs.ec2_id
 }
 

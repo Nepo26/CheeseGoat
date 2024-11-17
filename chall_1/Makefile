@@ -38,7 +38,7 @@ publish:
 
 .PHONY: get
 get:
-	@echo "//TODO: get"
+	@echo "//TODO: get" >&2
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all init
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all get
 
@@ -66,6 +66,15 @@ plan: get
 		--terragrunt-working-dir "infra/environments/${ENV}" \
 		--terragrunt-out-dir "$(TF_PLAN_DIR)"
 #		--terragrunt-log-level trace --terragrunt-debug
+
+
+.PHONY: output
+output: get
+	@echo "// TODO: Output">&2
+	@terragrunt run-all refresh \
+		--terragrunt-working-dir "infra/environments/${ENV}"
+	@terragrunt run-all output -json \
+		--terragrunt-working-dir "infra/environments/${ENV}"
 
 .PHONY: destroy
 destroy: get
