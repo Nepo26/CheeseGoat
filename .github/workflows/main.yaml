@@ -7,7 +7,6 @@ on:
       - 'chall_1/**'
     branches:
       - main
-      - develop
 
 permissions:
   id-token: write
