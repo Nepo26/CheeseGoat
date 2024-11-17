@@ -31,12 +31,11 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: filter
         with:
-          working-directory: 'chall_1'
           filters: |
             app:
-              - 'app/**'
+              - 'chall_1/app/**'
             infra:
-              - 'infra/**'
+              - 'chall_1/infra/**'
   
 
   tf_create_repository:
