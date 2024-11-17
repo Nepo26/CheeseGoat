@@ -57,10 +57,33 @@ jobs:
         with:
           name: ${{needs.tf_create_ecr.outputs.artifact-id}}
 
-      - run: "cat ${{ steps.download-artifact.outputs.download-path }}/terraform-output-artifacts/output.json | jq -r '.ecr_name.value' "
+      - id: ecr_name
+        run: echo "ecr_name=$(cat ${{ steps.download-artifact.outputs.download-path }}/terraform-output-artifacts/output.json | jq -r '.ecr_name.value')" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Cache Docker layers
+        id: cache-docker
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: "${{ runner.os }}-buildx-${{ github.sha }}"
+
+
+      - name: Authenticating to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.TERRAFORM_IAM_ROLE}}
+          aws-region: ${{env.region}}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set short sha
+        id: sha_short
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -68,10 +91,7 @@ jobs:
           context: "chall_1/app/"
           push: false
           load: true
-          tags: user/app:latest
-
-      - name: Authenticating to AWS using OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{secrets.TERRAFORM_IAM_ROLE}}
-          aws-region: ${{env.region}}
+          tags: ${{ steps.login-ecr.outputs.registry}}/${{steps.ecr_name.outputs.ecr_name}}:${{steps.sha_short.outputs.sha_short}}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          provenance: false
