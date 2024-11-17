@@ -93,7 +93,7 @@ jobs:
 
   build_image:
     needs: [changes, tf_create_repository]
-    if: ${{ needs.changes.outputs.app }}
+    if: ${{ ( needs.changes.outputs.app && failure() ) || (needs.changes.outputs.app && success())}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
