@@ -35,3 +35,19 @@ the simplest way.
 ##### Cheap Way
 
 ##### Future-Proof Way
+
+---
+
+Set up github actions OIDC Connection Provider:
+```bash
+make local apply "ENV=mgmt" "IAM_USER=<iam_user>"
+```
+
+
+--- 
+# Architecture
+Regarding architecture it may help to understand the flow.
+This is my online excalidraw crude diagram: https://excalidraw.com/#json=sAXao9F1Ev0aVQUh55YAU,lbLbJBHmxFVUz_Fc-WH_RQ.
+
+
+
