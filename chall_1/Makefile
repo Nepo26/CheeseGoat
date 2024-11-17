@@ -55,9 +55,16 @@ fmt:
 
 .PHONY: apply
 apply: get
-	@echo "//TODO: create-infra"
+	@echo "//TODO: create-infra" >&2
 	@terragrunt run-all apply \
 		--terragrunt-working-dir "infra/environments/${ENV}"
+
+
+.PHONY: apply-approved
+apply-approved: get
+	@echo "//TODO: apply-approved" >&2
+	@terragrunt run-all apply -auto-approve \
+  		--terragrunt-working-dir "infra/environments/${ENV}"
 
 .PHONY: plan
 plan: get
