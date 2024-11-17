@@ -50,11 +50,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Show ECR Info
-        run: "echo artifact_url=${{ needs.tf_create_ecr.outputs.artifact_outputs.artifact_url }}"
+        run: "echo artifact_url=${{ needs.tf_create_ecr.outputs.artifact_url }}"
 
       - uses: actions/download-artifact@v4
         with:
-          name: ${{needs.tf_create_ecr.outputs.artifact_outputs.artifact-id}}
+          name: ${{needs.tf_create_ecr.outputs.artifact-id}}
 
       - run: "ls -R"
 

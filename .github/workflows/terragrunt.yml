@@ -56,8 +56,11 @@ on:
         required: true
 
     outputs:
-      artifact_outputs:
-        value: ${{ jobs.terraform.outputs.artifact_outputs }}
+      artifact_id:
+        value: ${{ jobs.terraform.outputs.artifact_id }}
+
+      artifact_url:
+        value: ${{ jobs.terraform.outputs.artifact_url }}
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -70,7 +73,8 @@ jobs:
       run:
         working-directory: ${{ inputs.working-directory }}
     outputs:
-      artifact_outputs: ${{ steps.artifact-generator.outputs }}
+      artifact_id: ${{ steps.artifact-generator.outputs.artifact-id }}
+      artifact_url: ${{ steps.artifact-generator.outputs.artifact-url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
