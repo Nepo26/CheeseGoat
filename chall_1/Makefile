@@ -64,7 +64,8 @@ apply: get
 apply-approved: get
 	@echo "//TODO: apply-approved" >&2
 	@terragrunt run-all apply -auto-approve \
-  		--terragrunt-working-dir "infra/environments/${ENV}"
+  		--terragrunt-working-dir "infra/environments/${ENV}" \
+  		--terragrunt-non-interactive
 
 .PHONY: plan
 plan: get
