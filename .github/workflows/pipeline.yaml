@@ -58,7 +58,7 @@ jobs:
           name: ${{needs.tf_create_ecr.outputs.artifact-id}}
 
       - run: "ls -lha"
-      - run: "ls -lha ${{ steps.download-artifact.outputs.download-path }}terraform-output-artifacts/"
+      - run: "ls -lha ${{ steps.download-artifact.outputs.download-path }}/terraform-output-artifacts/"
 
       - run: "cat ${{ steps.download-artifact.outputs.download-path }}/terraform-output-artifacts/output.json"
       - run: "cat ${{ steps.download-artifact.outputs.download-path }}/terraform-output-artifacts/output.json | jq -f '.ecr_name.value' "
