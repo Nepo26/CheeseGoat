@@ -8,6 +8,19 @@ on:
     branches:
       - main
 
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+
+env:
+  tf_version: '1.9.7'
+  tg_version: '0.68.15-beta2024111501'
+  environment: 'global'
+  region: 'us-east-1'
+
+
 jobs:
   tf_create_ecr:
     runs-on: ubuntu-latest
