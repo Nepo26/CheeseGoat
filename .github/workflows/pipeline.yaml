@@ -53,10 +53,14 @@ jobs:
         run: "echo artifact_url=${{ needs.tf_create_ecr.outputs.artifact_url }}"
 
       - uses: actions/download-artifact@v4
+        id: download-artifact
         with:
           name: ${{needs.tf_create_ecr.outputs.artifact-id}}
 
-      - run: "ls -R"
+      - run: "ls -lha"
+
+      - run: "cat ${{ steps.download-artifact.outputs.download-path }}"
+      - run: "cat ${{ steps.download-artifact.outputs.download-path }} | jq -f '.ecr_name.value' "
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
