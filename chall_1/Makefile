@@ -6,11 +6,13 @@ INFRA_DIR:="$(abspath $(CURDIR)/infra)"
 TF_PLAN_DIR:="$(INFRA_DIR)/tmp/tfplan"
 ENV:=""
 IAM_USER:=""
-
+LOCAL:=""
 include .env
 export $(shell sed 's/=.*//' .env)
 
-
+ifeq ($(LOCAL),true)
+	SHELL= aws-vault exec --server goat -- /bin/bash
+endif
 
 .PHONY: build-container
 build-container:
@@ -32,11 +34,10 @@ get:
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all init
 	@terragrunt --terragrunt-working-dir "infra/environments/${ENV}" run-all get
 
-.PHONY: local
-local:
-	@echo "Setting AWS Vault credentials for IAM_USER=$(IAM_USER)"
-	@# Using shell here so makefile wait for command end, this avoids exporting and empty file
-	@eval export $$(aws-vault export --format=export-env $(IAM_USER))
+.PHONY: debug-env
+debug-env:
+	@#env
+	@aws sts get-caller-identity
 
 .PHONY: fmt format
 fmt:
@@ -57,6 +58,14 @@ plan: get
 		--terragrunt-working-dir "infra/environments/${ENV}" \
 		--terragrunt-out-dir "$(TF_PLAN_DIR)"
 #		--terragrunt-log-level trace --terragrunt-debug
+
+.PHONY: destroy
+destroy: get
+	@echo "// TODO: destroy"
+	@terragrunt run-all destroy \
+		--terragrunt-working-dir "infra/environments/${ENV}" \
+		--terragrunt-out-dir "$(TF_PLAN_DIR)"
+
 
 .PHONY: show
 show:
