@@ -13,7 +13,8 @@ module "iam_github_oidc_role" {
     ManageSqsSns = module.policy_manage_sqs_sns.arn
     ManageCloudFront = module.policy_manage_cloudfront.arn
     ManageEksClusters = module.policy_manage_eks_clusters.arn
-    ManageRout53 = module.policy_manage_route53.arn
+    ManageRoute53 = module.policy_manage_route53.arn
+    ManageECR = module.policy_manage_ecr.arn
   }
 
   tags = {

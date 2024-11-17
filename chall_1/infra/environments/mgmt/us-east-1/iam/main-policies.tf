@@ -22,6 +22,41 @@ data "aws_iam_policy_document" "tf_state_admin_permissions" {
   }
 }
 
+### POLICY TO MANAGE ECR
+
+module "policy_manage_ecr" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
+
+  name        = "policy_manage_ecr"
+  path        = "/sre/ecr/"
+  description = "Allow to create, manage, and describe ECR repositories and images"
+
+  policy = data.aws_iam_policy_document.manage_ecr_permissions.json
+}
+
+data "aws_iam_policy_document" "manage_ecr_permissions" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:CreateRepository",
+      "ecr:DeleteRepository",
+      "ecr:DescribeRepositories",
+      "ecr:PutImage",
+      "ecr:BatchGetImage",
+      "ecr:BatchDeleteImage",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:InitiateLayerUpload",
+      "ecr:UploadLayerPart",
+      "ecr:CompleteLayerUpload",
+      "ecr:ListTagsForResource",
+      "ecr:SetRepositoryPolicy",
+      "ecr:PutLifecyclePolicy"
+    ]
+    resources = ["*"]
+  }
+}
+
+
 ### POLICY TO CREATE DATABASES
 module "policy_manage_databases" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
