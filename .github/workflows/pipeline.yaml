@@ -36,7 +36,7 @@ jobs:
       global_account_id: ${{secrets.GLOBAL_ACCOUNT_ID}}
       mgmt_account_id: ${{secrets.MGMT_ACCOUNT_ID}}
       dev_account_id: ${{secrets.DEV_ACCOUNT_ID}}
-      token: ${{github.token}}
+      token: ${{secrets.GITHUB_TOKEN}}
 
 #    runs-on: ubuntu-latest
 #    env:
