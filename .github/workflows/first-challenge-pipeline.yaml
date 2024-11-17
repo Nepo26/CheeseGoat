@@ -1,4 +1,4 @@
-name: First Challenge CI/CD Pipeline
+name: First Challenge - CI/CD Pipeline
 
 on:
   workflow_dispatch:
@@ -10,9 +10,11 @@ on:
 
 jobs:
   tf_create_ecr:
-    if: ${{ github.event.event_type == 'create_ecr' }}
     runs-on: ubuntu-latest
-    env: ${{ github.event.client_payload.env.environment }}
+    env:
+      GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
+      MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
+      DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
     defaults:
       run:
         working-directory: 'chall_1/'
@@ -43,17 +45,9 @@ jobs:
 
       - name: Format Terraform
         run: "make fmt ENV=${{env.environment}}"
-        env:
-          GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
-          MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
-          DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
 
       - name: Plan Terraform
         run: "make plan ENV=${{env.environment}}"
-        env:
-          GLOBAL_ACCOUNT_ID: ${{secrets.GLOBAL_ACCOUNT_ID}}
-          MGMT_ACCOUNT_ID: ${{secrets.MGMT_ACCOUNT_ID}}
-          DEV_ACCOUNT_ID: ${{secrets.DEV_ACCOUNT_ID}}
 
   build_image:
     runs-on: ubuntu-latest
@@ -71,3 +65,8 @@ jobs:
           push: false
           load: true
           tags: user/app:latest
+      - name: Authenticating to AWS using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.TERRAFORM_IAM_ROLE}}
+          aws-region: ${{env.region}}
