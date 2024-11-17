@@ -40,7 +40,7 @@ jobs:
 
   tf_create_repository:
     needs: changes
-    if: ${{ needs.changes.outputs.infra == 'true'}}
+    if: ${{ contains(needs.changes.outputs, 'infra') && needs.changes.outputs.infra == 'true'}}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -87,7 +87,7 @@ jobs:
 
   build_image:
     needs: [changes, tf_create_repository]
-    if: ${{ needs.changes.outputs.app == 'true' }}
+    if: ${{ contains(needs.changes.outputs, app) && needs.changes.outputs.app == 'true'}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
