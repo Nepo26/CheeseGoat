@@ -14,7 +14,7 @@ permissions:
 env:
   tf_version: '1.9.7'
   tg_version: '0.68.15-beta2024111501'
-  environment: 'dev'
+  environment: 'global'
   region: 'us-east-1'
 
 jobs:
@@ -23,8 +23,6 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    env:
-      environment: global
     defaults:
       run:
         working-directory: 'chall_1/'
