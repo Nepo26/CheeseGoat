@@ -49,7 +49,6 @@ jobs:
         with:
           role-to-assume: "${{ secrets.TERRAFORM_IAM_ROLE }}"
           aws-region: "${{ env.region }}"
-          role-session-name: GithubActions
 
       - name: Format Terraform
         run: "make fmt ENV=${{env.environment}}"
