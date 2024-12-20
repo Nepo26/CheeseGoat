@@ -88,8 +88,7 @@ output: get
 destroy: get
 	@echo "// TODO: destroy"
 	@terragrunt run-all destroy \
-		--terragrunt-working-dir "infra/environments/${ENV}" \
-		--terragrunt-out-dir "$(TF_PLAN_DIR)"
+		--terragrunt-working-dir "infra/environments/${ENV}"
 
 
 .PHONY: show

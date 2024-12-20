@@ -1,0 +1,13 @@
+name: 'Chall1 - Deployment Pipeline'
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'chall_1/app/**'
+    branches:
+      - 'main'
+
+
+jobs:
+
+
